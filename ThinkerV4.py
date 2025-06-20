@@ -562,8 +562,8 @@ def generate_combined_html_report(report, output_path, logo_brainwise_path=None,
       }
       
       .logo {
-        width: 64px;
-        height: 64px;
+        width: 120px;
+        height: 120px;
         object-fit: contain;
         filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1));
       }
@@ -1113,6 +1113,53 @@ def generate_combined_html_report(report, output_path, logo_brainwise_path=None,
             });
         }
     }
+
+    //Sorttable columns
+    function sortTable(table, columnIndex, dataType) {
+    let rows = Array.from(table.rows).slice(1); // Escludi l'header
+    let isAscending = table.getAttribute('data-sort-direction') !== 'asc';
+    
+    rows.sort((a, b) => {
+        let aValue = a.cells[columnIndex].textContent.trim();
+        let bValue = b.cells[columnIndex].textContent.trim();
+        
+        if (dataType === 'number') {
+            // Rimuovi caratteri non numerici (virgole, spazi)
+            aValue = parseFloat(aValue.replace(/[^\d.-]/g, '')) || 0;
+            bValue = parseFloat(bValue.replace(/[^\d.-]/g, '')) || 0;
+            return isAscending ? aValue - bValue : bValue - aValue;
+        } else {
+            // Ordinamento stringa
+            return isAscending ? 
+                aValue.localeCompare(bValue) : 
+                bValue.localeCompare(aValue);
+        }
+    });
+    
+    // Rimuovi le righe esistenti
+    while (table.rows.length > 1) {
+        table.deleteRow(1);
+    }
+    
+    // Aggiungi le righe ordinate
+    rows.forEach(row => table.appendChild(row));
+    
+    // Aggiorna la direzione di ordinamento
+    table.setAttribute('data-sort-direction', isAscending ? 'asc' : 'desc');
+    
+    // Aggiorna gli indicatori visivi
+    updateSortIndicators(table, columnIndex, isAscending);
+}
+
+function updateSortIndicators(table, activeColumn, isAscending) {
+    // Rimuovi tutti gli indicatori esistenti
+    Array.from(table.querySelectorAll('th')).forEach((th, index) => {
+        th.classList.remove('sort-asc', 'sort-desc');
+        if (index === activeColumn) {
+            th.classList.add(isAscending ? 'sort-asc' : 'sort-desc');
+        }
+    });
+}
     
     // Grafici SharePoint specifici (rimosso grafico sicurezza)
     function initSharePointCharts() {
@@ -1687,7 +1734,7 @@ def generate_combined_html_report(report, output_path, logo_brainwise_path=None,
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Audit Condivisioni - SharePoint & OneDrive</title>
+    <title>Report Audit condivisioni attive- SharePoint & OneDrive</title>
     {css}
 </head>
 <body>
@@ -1696,7 +1743,7 @@ def generate_combined_html_report(report, output_path, logo_brainwise_path=None,
             <div class="header-content">
                 <img src="{logo_brainwise_base64}" alt="Logo Brainwise" class="logo">
                 <div class="header-text">
-                    <h1>Report Audit Condivisioni</h1>
+                    <h1>Report Audit condivisioni attive</h1>
                     <p>Analisi completa SharePoint & OneDrive - Dashboard Avanzato</p>
                 </div>
             </div>
