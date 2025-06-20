@@ -521,14 +521,16 @@ def get_logo_base64(logo_path=None):
                     return f"data:image/png;base64,{encoded_string}"
         else:
             # Logo SVG di default
-            return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiMyZTVjM2UiLz4KPHN2ZyB4PSIxNiIgeT0iMTYiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAySDEzVjEwSDE3VjEySDEzVjIySDEyVjEySDhWMTBIMTJWMloiLz4KPHN2Zz4KPHN2Zz4="
+            return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIHN0cm9rZT0iIzI2NWMzZSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSIjY2ZmIi8+PHRleHQgeD0iMzIiIHk9IjM3IiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMmU1YzNlIj5Mb2dvPC90ZXh0Pjwvc3ZnPg=="
     except Exception as e:
         print(f"Errore caricamento logo: {e}")
-        return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiMyZTVjM2UiLz4KPHN2ZyB4PSIxNiIgeT0iMTYiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAySDEzVjEwSDE3VjEySDEzVjIySDEyVjEySDhWMTBIMTJWMloiLz4KPHN2Zz4KPHN2Zz4="
+        return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIHN0cm9rZT0iIzI2NWMzZSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSIjY2ZmIi8+PHRleHQgeD0iMzIiIHk9IjM3IiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMmU1YzNlIj5Mb2dvPC90ZXh0Pjwvc3ZnPg=="
 
-def generate_combined_html_report(report, output_path, logo_path=None):
-    """Genera il report HTML combinato"""
-    logo_base64 = get_logo_base64(logo_path)
+def generate_combined_html_report(report, output_path, logo_brainwise_path=None, logo_cliente_path=None):
+    """Genera il report HTML combinato con due loghi distinti"""
+    logo_brainwise_base64 = get_logo_base64(logo_brainwise_path)
+    logo_cliente_base64 = get_logo_base64(logo_cliente_path)
+
     
     css = '''
     <style>
@@ -1692,7 +1694,7 @@ def generate_combined_html_report(report, output_path, logo_path=None):
     <div class="container">
         <div class="header">
             <div class="header-content">
-                <img src="{logo_base64}" alt="Logo Aziendale" class="logo">
+                <img src="{logo_brainwise_base64}" alt="Logo Brainwise" class="logo">
                 <div class="header-text">
                     <h1>Report Audit Condivisioni</h1>
                     <p>Analisi completa SharePoint & OneDrive - Dashboard Avanzato</p>
@@ -1712,7 +1714,7 @@ def generate_combined_html_report(report, output_path, logo_path=None):
             <!-- Grid con 4 card: 1 placeholder + 3 con dati -->
             <div class="grid-4">
                 <div class="placeholder-card">
-                    <img src="{logo_base64}" alt="Logo" class="logo">
+                    <img src="{logo_cliente_base64}" alt="Logo Cliente" class="logo">
                 </div>
                 <div class="stat-card" onclick="showTab('sharepoint')" style="cursor: pointer;">
                     <h3>Totale Condivisioni Attive</h3>
@@ -1958,24 +1960,31 @@ def main():
         messagebox.showinfo("Operazione Annullata", "Nessun file OneDrive selezionato.")
         return
     
-    # Selezione logo (opzionale)
-    logo_path = None
-    use_logo = messagebox.askyesno("Selezione Logo", "Vuoi aggiungere un logo aziendale al report?")
-    if use_logo:
-        logo_path = filedialog.askopenfilename(
-            title="Seleziona Logo Aziendale", 
-            filetypes=[
-                ("File immagine", "*.png *.jpg *.jpeg *.gif *.svg"),
-                ("PNG", "*.png"),
-                ("JPEG", "*.jpg *.jpeg"),
-                ("GIF", "*.gif"),
-                ("SVG", "*.svg"),
-                ("Tutti i file", "*.*")
-            ]
-        )
-        if not logo_path:
-            messagebox.showinfo("Selezione Logo", "Nessun logo selezionato. Verrà utilizzato il logo di default.")
-    
+    # Selezione logo Brainwise (opzionale)
+    messagebox.showinfo("Selezione Logo Brainwise", "Seleziona il logo Brainwise (se vuoi usare quello di default premi Annulla)")
+    logo_brainwise_path = filedialog.askopenfilename(
+        title="Seleziona Logo Brainwise", 
+        filetypes=[
+            ("File immagine", "*.png *.jpg *.jpeg *.gif *.svg"),
+            ("Tutti i file", "*.*")
+        ]
+    )
+    if not logo_brainwise_path:
+        logo_brainwise_path = None
+
+    # Selezione logo Cliente (opzionale)
+    messagebox.showinfo("Selezione Logo Cliente", "Seleziona il logo del cliente (verrà mostrato nella tile a sinistra, premi Annulla per usare quello di default)")
+    logo_cliente_path = filedialog.askopenfilename(
+        title="Seleziona Logo Cliente", 
+        filetypes=[
+            ("File immagine", "*.png *.jpg *.jpeg *.gif *.svg"),
+            ("Tutti i file", "*.*")
+        ]
+    )
+    if not logo_cliente_path:
+        messagebox.showwarning("Attenzione", "Nessun logo cliente selezionato. Verrà utilizzato il logo di default.")
+        logo_cliente_path = None
+
     try:
         # Carica i dati con gestione dell'encoding
         print(f"Caricamento SharePoint: {spo_file}")
@@ -2001,8 +2010,8 @@ def main():
             messagebox.showinfo("Operazione Annullata", "Report non salvato.")
             return
         
-        # Genera il report HTML
-        generate_combined_html_report(report, save_path, logo_path)
+        # Genera il report HTML con due loghi
+        generate_combined_html_report(report, save_path, logo_brainwise_path, logo_cliente_path)
         messagebox.showinfo("Successo", f"Report avanzato salvato in: {save_path}")
         
     except Exception as e:
