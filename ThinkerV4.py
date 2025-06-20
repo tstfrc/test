@@ -963,6 +963,104 @@ def generate_combined_html_report(report, output_path, logo_brainwise_path=None,
         from { transform: translateY(-50px); opacity: 0; }
         to { transform: translateY(0); opacity: 1; }
       }
+      /* Legenda Risk Score */
+.legend-card {
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%);
+    border-left: 4px solid #3498db;
+}
+
+.legend-card h3 {
+    color: #2e5c3e;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.legend-description {
+    color: #666;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.legend-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.risk-indicator {
+    font-size: 1.2em;
+    flex-shrink: 0;
+}
+
+.risk-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.risk-info strong {
+    color: #2c3e50;
+    font-size: 0.9rem;
+}
+
+.risk-info span {
+    color: #666;
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+/* Colori specifici per ogni livello di rischio */
+.risk-high {
+    border-left: 3px solid #e74c3c;
+}
+
+.risk-medium-high {
+    border-left: 3px solid #f39c12;
+}
+
+.risk-medium {
+    border-left: 3px solid #ff9500;
+}
+
+.risk-low {
+    border-left: 3px solid #27ae60;
+}
+
+/* Responsive per mobile */
+@media (max-width: 768px) {
+    .legend-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .legend-item {
+        padding: 10px;
+    }
+    
+    .risk-info strong {
+        font-size: 0.85rem;
+    }
+    
+    .risk-info span {
+        font-size: 0.75rem;
+    }
+}
       
       /* Responsive Design */
       @media (max-width: 768px) {
@@ -1899,27 +1997,57 @@ function updateSortIndicators(table, activeColumn, isAscending) {
             </div>
         </div>
         
-        <!-- Tab Utenti -->
-        <div id="users" class="tab-content">
-            <div class="card">
-                <h2>👥 Analisi Utenti</h2>
-                <input type="text" id="userSearch" class="search-box" placeholder="🔍 Cerca utenti..." onkeyup="searchTable('userSearch', 'usersTable')">
-                <table id="usersTable">
-                    <thead>
-                        <tr>
-                            <th>Utente</th>
-                            <th>Totale</th>
-                            <th>SharePoint</th>
-                            <th>OneDrive</th>
-                            <th>Risk Score</th>
-                            <th>Domini Esterni</th>
-                            <th>Azioni</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+<!-- Tab Utenti -->
+<div id="users" class="tab-content">
+    <!-- Tile Legenda Risk Score -->
+    <div class="card legend-card">
+        <h3>📊 Legenda Risk Score</h3>
+        <p class="legend-description">Indica il livello di rischio associato alle condivisioni effettuate:</p>
+        <div class="legend-grid">
+            <div class="legend-item risk-high">
+                <span class="risk-indicator">🔴</span>
+                <div class="risk-info">
+                    <strong>High</strong>
+                    <span>Rischio molto alto – numerose condivisioni potenzialmente critiche</span>
+                </div>
+            </div>
+            <div class="legend-item risk-medium">
+                <span class="risk-indicator">🟠</span>
+                <div class="risk-info">
+                    <strong>Medium</strong>
+                    <span>Rischio medio – attività da monitorare</span>
+                </div>
+            </div>
+            <div class="legend-item risk-low">
+                <span class="risk-indicator">🟢</span>
+                <div class="risk-info">
+                    <strong>Low</strong>
+                    <span>Rischio basso – attività contenute</span>
+                </div>
             </div>
         </div>
+    </div>
+    
+    <!-- Tabella Utenti -->
+    <div class="card">
+        <h2>👥 Analisi Utenti</h2>
+        <input type="text" id="userSearch" class="search-box" placeholder="🔍 Cerca utenti..." onkeyup="searchTable('userSearch', 'usersTable')">
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(document.getElementById('usersTable'), 0, 'string')">Utente</th>
+                    <th onclick="sortTable(document.getElementById('usersTable'), 1, 'number')">Totale</th>
+                    <th onclick="sortTable(document.getElementById('usersTable'), 2, 'number')">SharePoint</th>
+                    <th onclick="sortTable(document.getElementById('usersTable'), 3, 'number')">OneDrive</th>
+                    <th onclick="sortTable(document.getElementById('usersTable'), 4, 'number')">Risk Score</th>
+                    <th onclick="sortTable(document.getElementById('usersTable'), 5, 'number')">Domini Esterni</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
         
         <!-- Tab Domini -->
         <div id="domains" class="tab-content">
