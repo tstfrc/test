@@ -981,6 +981,7 @@ def generate_combined_html_report(report, output_path, logo_path=None):
     grid-template-columns: auto 1fr 1fr 1fr; /* Logo + 3 tiles */
     gap: 20px;
     align-items: center;
+    margin-bottom: 30px;
 }
 
 .placeholder-card {
